@@ -1,0 +1,117 @@
+local LibraryUI = {}
+local CoreGui = game:GetService("CoreGui")
+local Camera = game:GetService("Workspace").CurrentCamera or game:GetService("Workspace").Camera
+local MainGui = nil
+local oldcameratype = nil
+local plr = game:GetService("Players").LocalPlayer
+local char = plr.Character or plr.CharacterAdded
+local Blurgui = Instance.new("BlurEffect")
+Blurgui.Parent = game:GetService("Lighting")
+Blurgui.Enabled = false
+
+function randomString()
+	local length = math.random(10,20)
+	local array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(32, 126))
+	end
+	return table.concat(array)
+end
+
+function getRoot(charget)
+	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
+	return rootPart
+end
+
+
+function LibraryUI.CreateLib(Title, theme)
+    local TabGui = Instance.new("ScreenGui")
+    MainGui = Instance.new("Frame")
+    local Corner = Instance.new("UICorner")
+
+    TabGui.Parent = CoreGui
+    TabGui.Name = randomString()
+    TabGui.OnTopOfCoreBlur = true
+    TabGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    MainGui.Name = randomString()
+    MainGui.Visible = false
+    MainGui.Parent = TabGui
+    MainGui.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainGui.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    MainGui.BorderSizePixel = 0
+    MainGui.Position = UDim2.new(0.5, 0, 0.5, 0)
+    MainGui.Size = UDim2.new(0, 750, 0, 530)
+
+    Corner.Name = "Corner"
+    Corner.Parent = MainGui
+
+    local Tab = Instance.new("Frame")
+    local TabCorner = Instance.new("UICorner")
+
+    Tab.Name = "Tab"
+    Tab.Parent = MainGui
+    Tab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Tab.BorderSizePixel = 0
+    Tab.Size = UDim2.new(0, 180, 1, 0)
+
+    TabCorner.Name = "TabCorner"
+    TabCorner.Parent = Tab
+
+    local Logo = Instance.new("TextLabel")
+
+    Logo.Name = "Logo"
+    Logo.Parent = Tab
+    Logo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    Logo.BackgroundTransparency = 1.000
+    Logo.BorderSizePixel = 0
+    Logo.Size = UDim2.new(1, 0, 0, 50)
+    Logo.Font = Enum.Font.ArialBold
+    Logo.Text = "Trexmix"
+    Logo.TextColor3 = Color3.fromRGB(20, 145, 255)
+    Logo.TextSize = 30.000
+
+    local function zigzag(X) return math.acos(math.cos(X*math.pi))/math.pi end
+    local rainbowcounterforlogo1 = 0
+    game:GetService("RunService").Heartbeat:Connect(function()
+        Logo.TextColor3 = Color3.fromHSV(zigzag(rainbowcounterforlogo1),1,1)
+        rainbowcounterforlogo1 = rainbowcounterforlogo1 + 0.01
+    end)
+end
+
+function LibraryUI:NewTab(TabName)
+    function LibraryUI:NewButton(Title, Description, script)
+        task.spawn(script)
+    end
+    function LibraryUI:NewToggle(Title, Description, callback)
+        local callback = callback or function() end
+        pcall(callback, false)
+    end
+end
+
+function LibraryUI:WindowsToggle(state)
+    if state == true then
+        if MainGui then
+            MainGui.Visible = true
+            oldcameratype = Camera.CameraType
+            Blurgui.Enabled = true
+            Camera.CameraType = Enum.CameraType.Scriptable
+            getRoot(char).Anchored = true
+        end
+    elseif state == false then
+        if MainGui then
+            MainGui.Visible = false
+            Blurgui.Enabled = false
+            getRoot(char).Anchored = false
+            if oldcameratype then
+                Camera.CameraType = oldcameratype
+            else
+                Camera.CameraType = Enum.CameraType.Custom
+            end
+        end
+    end
+end
+
+function LibraryUI:GetWindowsToggle()
+    return MainGui.Visible
+end
