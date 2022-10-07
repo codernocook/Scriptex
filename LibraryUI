@@ -5,18 +5,31 @@ local MainGui = nil
 local oldcameratype = nil
 local plr = game:GetService("Players").LocalPlayer
 local char = plr.Character or plr.CharacterAdded
+local TabCount = 0
 local Blurgui = Instance.new("BlurEffect")
 Blurgui.Parent = game:GetService("Lighting")
 Blurgui.Enabled = false
+local AllTab = {}
 
-function randomString()
-	local length = math.random(10,20)
+function randomString(lengthget)
+	if lengthget and tonumber(lengthget) then
+        local length = tonumber(lengthget)
+        local array = {}
+        for i = 1, length do
+            array[i] = string.char(math.random(32, 126))
+        end
+        return table.concat(array)
+    else
+        local length = math.random(10,20)
 	local array = {}
 	for i = 1, length do
 		array[i] = string.char(math.random(32, 126))
 	end
 	return table.concat(array)
+    end
 end
+
+Blurgui.Name = randomString(50)
 
 function getRoot(charget)
 	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
@@ -25,11 +38,12 @@ end
 
 
 function LibraryUI.CreateLib(Title, theme)
+    local LibraryCall = {}
     local TabGui = Instance.new("ScreenGui")
     MainGui = Instance.new("Frame")
     local Corner = Instance.new("UICorner")
 
-    TabGui.Parent = CoreGui
+    TabGui.Parent = CoreGui or game:GetService("CoreGui")
     TabGui.Name = randomString()
     TabGui.OnTopOfCoreBlur = true
     TabGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -46,17 +60,32 @@ function LibraryUI.CreateLib(Title, theme)
     Corner.Name = "Corner"
     Corner.Parent = MainGui
 
+    local UIListLayout = Instance.new("UIListLayout")
+
+    UIListLayout.Parent = MainGui
+    UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
     local Tab = Instance.new("Frame")
     local TabCorner = Instance.new("UICorner")
+    local TabUIlist = Instance.new("UIGridLayout")
 
-    Tab.Name = "Tab"
+    Tab.Name = randomString()
     Tab.Parent = MainGui
     Tab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Tab.BorderSizePixel = 0
     Tab.Size = UDim2.new(0, 180, 1, 0)
 
-    TabCorner.Name = "TabCorner"
+    TabCorner.Name = randomString()
     TabCorner.Parent = Tab
+
+    TabUIlist.Name = randomString()
+    TabUIlist.Parent = Tab
+
+    TabUIlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    TabUIlist.SortOrder = Enum.SortOrder.LayoutOrder
+    TabUIlist.CellPadding = UDim2.new(0, 5, 0, 10)
+    TabUIlist.CellSize = UDim2.new(0, 500, 0, 50)
 
     local Logo = Instance.new("TextLabel")
 
@@ -65,11 +94,182 @@ function LibraryUI.CreateLib(Title, theme)
     Logo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Logo.BackgroundTransparency = 1.000
     Logo.BorderSizePixel = 0
+    Logo.LayoutOrder = 0
     Logo.Size = UDim2.new(1, 0, 0, 50)
     Logo.Font = Enum.Font.ArialBold
     Logo.Text = "Trexmix"
     Logo.TextColor3 = Color3.fromRGB(20, 145, 255)
     Logo.TextSize = 30.000
+
+    function LibraryCall:NewTab(TabName)
+        local TabCall = {}
+        TabCount += 1
+        local SelectTab = Instance.new("TextButton")
+        SelectTab.Name = randomString()
+        SelectTab.Parent = Tab
+        SelectTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        SelectTab.BackgroundTransparency = 1.000
+        SelectTab.BorderSizePixel = 0
+        SelectTab.LayoutOrder = TabCount
+        SelectTab.Size = UDim2.new(1, 0, 0, 40)
+        SelectTab.Font = Enum.Font.Arial
+        SelectTab.Text = tostring(TabName) or "Tab"
+        SelectTab.TextColor3 = Color3.fromRGB(255, 255, 255)
+        SelectTab.TextSize = 20.000
+
+        local SectionWindows = Instance.new("Frame")
+        SectionWindows.Visible = false
+        SectionWindows.Name = randomString()..tostring(Title)
+        SectionWindows.Parent = MainGui
+        SectionWindows.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        SectionWindows.BorderSizePixel = 0
+        SectionWindows.LayoutOrder = 2
+        SectionWindows.Size = UDim2.new(0, 570, 1, 0)
+
+        local ValueDetection = Instance.new("BoolValue")
+        ValueDetection.Parent = SectionWindows
+        ValueDetection.Name = randomString()
+
+        SelectTab.MouseButton1Click:Connect(function()
+            if SectionWindows.Visible == false then
+                for count, allchildget in pairs(MainGui:GetChildren()) do
+                    if allchildget.ClassName == "Frame" and allchildget:FindFirstChildWhichIsA("BoolValue") then
+                        allchildget.Visible = false
+                    end
+                end
+                SectionWindows.Visible = true
+            else
+                SectionWindows.Visible = false
+            end
+        end)
+
+        local TabNameLabel = Instance.new("TextLabel")
+
+        TabNameLabel.Name = randomString()
+        TabNameLabel.Parent = SectionWindows
+        TabNameLabel.LayoutOrder = 0
+        TabNameLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        TabNameLabel.BackgroundTransparency = 1.000
+        TabNameLabel.BorderSizePixel = 0
+        TabNameLabel.Size = UDim2.new(0, 200, 0, 50)
+        TabNameLabel.Font = Enum.Font.Ubuntu
+        TabNameLabel.Text = tostring(TabName) or "Tab"
+        TabNameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TabNameLabel.TextSize = 20.000
+        TabNameLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+        local UIGridLayout = Instance.new("UIGridLayout")
+
+        UIGridLayout.Parent = SectionWindows
+        UIGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+        UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        UIGridLayout.CellPadding = UDim2.new(0, 5, 0, 10)
+        UIGridLayout.CellSize = UDim2.new(0, 500, 0, 50)
+
+        function TabCall:NewToggle(ToggleTitle, Description, callback)
+            local callback = callback or function() end
+            
+            local Toggle = Instance.new("Frame")
+            local UICorner = Instance.new("UICorner")
+            local TextLabel = Instance.new("TextLabel")
+            local Toggle_2 = Instance.new("TextButton")
+            local UICorner_2 = Instance.new("UICorner")
+            local Frame = Instance.new("Frame")
+            local UICorner_3 = Instance.new("UICorner")
+            local ToggleState = false
+
+            Toggle.Name = "Toggle"
+            Toggle.Parent = SectionWindows
+            Toggle.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            Toggle.BorderSizePixel = 0
+            Toggle.LayoutOrder = 1
+            Toggle.Size = UDim2.new(0, 100, 0, 100)
+
+            UICorner.Parent = Toggle
+
+            TextLabel.Parent = Toggle
+            TextLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            TextLabel.BackgroundTransparency = 1.000
+            TextLabel.Position = UDim2.new(0.0500000007, 0, 0, 0)
+            TextLabel.Size = UDim2.new(0, 200, 0, 50)
+            TextLabel.Font = Enum.Font.Ubuntu
+            TextLabel.Text = tostring(ToggleTitle)
+            TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextLabel.TextSize = 15.000
+            TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+            Toggle_2.Name = randomString()
+            Toggle_2.Parent = Toggle
+            Toggle_2.AnchorPoint = Vector2.new(1, 0.5)
+            Toggle_2.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+            Toggle_2.BorderSizePixel = 0
+            Toggle_2.Position = UDim2.new(0.95, 0, 0.5, 0)
+            Toggle_2.Size = UDim2.new(0, 50, 0, 20)
+            Toggle_2.Font = Enum.Font.SourceSans
+            Toggle_2.Text = ""
+            Toggle_2.TextColor3 = Color3.fromRGB(0, 0, 0)
+            Toggle_2.TextSize = 1.000
+
+            UICorner_2.Parent = Toggle_2
+
+            Frame.Parent = Toggle_2
+            Frame.AnchorPoint = Vector2.new(0, 0.5)
+            Frame.BackgroundColor3 = Color3.fromRGB(9, 156, 209)
+            Frame.BorderSizePixel = 0
+            Frame.Position = UDim2.new(0, 0, 0.5, 0)
+            Frame.Size = UDim2.new(0.300000012, 0, 1.29999995, 0)
+
+            UICorner_3.Parent = Frame
+
+            Toggle_2.MouseButton1Click:Connect(function()
+                if ToggleState == false then
+                    ToggleState = true
+                    Frame:TweenPosition(UDim2.new(0, 0, 0.5, 0), "In", Enum.EasingStyle.Linear, 0.1, false)
+                    Toggle_2.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+                    TextLabel.TextColor3 = Color3.fromRGB(255,255,255)
+                    pcall(callback, false)
+                else
+                    ToggleState = false
+                    Frame:TweenPosition(UDim2.new(0.8, 0, 0.5, 0), "In", Enum.EasingStyle.Linear, 0.1, false)
+                    TextLabel.TextColor3 = Color3.fromRGB(9, 156, 209)
+                    Toggle_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                    pcall(callback, true)
+                end
+            end)
+        end
+        return TabCall
+    end
+    
+    function LibraryCall:WindowsToggle(state)
+        if state == true then
+            if MainGui then
+                pcall(function()
+                    getRoot(char).Anchored = true
+                    MainGui.Visible = true
+                    oldcameratype = Camera.CameraType
+                    Blurgui.Enabled = true
+                    Camera.CameraType = Enum.CameraType.Scriptable
+                end)
+            end
+        elseif state == false then
+            if MainGui then
+                pcall(function()
+                    getRoot(char).Anchored = false
+                    MainGui.Visible = false
+                    Blurgui.Enabled = false
+                    if oldcameratype then
+                        Camera.CameraType = oldcameratype
+                    else
+                        Camera.CameraType = Enum.CameraType.Custom
+                    end
+                end)
+            end
+        end
+    end
+
+    function LibraryCall:GetWindowsToggle()
+        return MainGui.Visible
+    end
 
     local function zigzag(X) return math.acos(math.cos(X*math.pi))/math.pi end
     local rainbowcounterforlogo1 = 0
@@ -77,41 +277,7 @@ function LibraryUI.CreateLib(Title, theme)
         Logo.TextColor3 = Color3.fromHSV(zigzag(rainbowcounterforlogo1),1,1)
         rainbowcounterforlogo1 = rainbowcounterforlogo1 + 0.01
     end)
+    return LibraryCall
 end
 
-function LibraryUI:NewTab(TabName)
-    function LibraryUI:NewButton(Title, Description, script)
-        task.spawn(script)
-    end
-    function LibraryUI:NewToggle(Title, Description, callback)
-        local callback = callback or function() end
-        pcall(callback, false)
-    end
-end
-
-function LibraryUI:WindowsToggle(state)
-    if state == true then
-        if MainGui then
-            MainGui.Visible = true
-            oldcameratype = Camera.CameraType
-            Blurgui.Enabled = true
-            Camera.CameraType = Enum.CameraType.Scriptable
-            getRoot(char).Anchored = true
-        end
-    elseif state == false then
-        if MainGui then
-            MainGui.Visible = false
-            Blurgui.Enabled = false
-            getRoot(char).Anchored = false
-            if oldcameratype then
-                Camera.CameraType = oldcameratype
-            else
-                Camera.CameraType = Enum.CameraType.Custom
-            end
-        end
-    end
-end
-
-function LibraryUI:GetWindowsToggle()
-    return MainGui.Visible
-end
+return LibraryUI
