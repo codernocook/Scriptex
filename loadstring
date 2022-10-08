@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/codernocook/MatrixClient-Roblox-/main/MainLoadScript.lua", true))()
