@@ -11,6 +11,10 @@ local AllTab = {}
 local uis = game:GetService("UserInputService")
 local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 local dir = "Matrix/"
+local betterisfile = function(file)
+	local suc, res = pcall(function() return readfile(file) end)
+	return suc and res ~= nil
+end
 
 function randomString(lengthget)
 	if lengthget and tonumber(lengthget) then
