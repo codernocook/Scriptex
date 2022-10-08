@@ -52,7 +52,7 @@ end
 local function getcustomassetfunc(path)
 	if not betterisfile(path) then
 		local req = httprequest({
-			Url = "https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/"..path:gsub("Matrix/Assets", "Assets"),
+			Url = "https://raw.githubusercontent.com/codernocook/MatrixClient-Roblox-"..path:gsub("Matrix/Assets", "Assets"),
 			Method = "GET"
 		})
 		writefile(path, req.Body)
