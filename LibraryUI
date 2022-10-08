@@ -3,13 +3,13 @@ local CoreGui = game:GetService("CoreGui")
 local Camera = game:GetService("Workspace").CurrentCamera or game:GetService("Workspace").Camera
 local MainGui = nil
 local oldcameratype = nil
-local plr = game:GetService("Players").LocalPlayer
-local char = plr.Character or plr.CharacterAdded
 local TabCount = 0
 local Blurgui = Instance.new("BlurEffect")
 Blurgui.Parent = game:GetService("Lighting")
 Blurgui.Enabled = false
 local AllTab = {}
+local uis = game:GetService("UserInputService")
+local mouse = game:GetService("Players").LocalPlayer:GetMouse()
 
 function randomString(lengthget)
 	if lengthget and tonumber(lengthget) then
@@ -32,7 +32,7 @@ end
 Blurgui.Name = randomString(50)
 
 function getRoot(charget)
-	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
+	local rootPart = charget:FindFirstChild('HumanoidRootPart') or charget:FindFirstChild('Torso') or charget:FindFirstChild('UpperTorso')
 	return rootPart
 end
 
@@ -44,6 +44,7 @@ function LibraryUI.CreateLib(Title, theme)
     local Corner = Instance.new("UICorner")
 
     TabGui.Parent = CoreGui or game:GetService("CoreGui")
+    TabGui.ResetOnSpawn = false
     TabGui.Name = randomString()
     TabGui.OnTopOfCoreBlur = true
     TabGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -89,7 +90,7 @@ function LibraryUI.CreateLib(Title, theme)
 
     local Logo = Instance.new("TextLabel")
 
-    Logo.Name = "Logo"
+    Logo.Name = randomString()
     Logo.Parent = Tab
     Logo.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     Logo.BackgroundTransparency = 1.000
@@ -97,7 +98,7 @@ function LibraryUI.CreateLib(Title, theme)
     Logo.LayoutOrder = 0
     Logo.Size = UDim2.new(1, 0, 0, 50)
     Logo.Font = Enum.Font.ArialBold
-    Logo.Text = "Trexmix"
+    Logo.Text = tostring(Title)
     Logo.TextColor3 = Color3.fromRGB(20, 145, 255)
     Logo.TextSize = 30.000
 
@@ -117,23 +118,25 @@ function LibraryUI.CreateLib(Title, theme)
         SelectTab.TextColor3 = Color3.fromRGB(255, 255, 255)
         SelectTab.TextSize = 20.000
 
-        local SectionWindows = Instance.new("Frame")
+        local SectionWindows = Instance.new("ScrollingFrame")
         SectionWindows.Visible = false
         SectionWindows.Name = randomString()..tostring(Title)
         SectionWindows.Parent = MainGui
         SectionWindows.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
         SectionWindows.BorderSizePixel = 0
         SectionWindows.LayoutOrder = 2
+        SectionWindows.ScrollBarThickness = 0
         SectionWindows.Size = UDim2.new(0, 570, 1, 0)
 
         local ValueDetection = Instance.new("BoolValue")
         ValueDetection.Parent = SectionWindows
         ValueDetection.Name = randomString()
+        ValueDetection.Value = true
 
         SelectTab.MouseButton1Click:Connect(function()
             if SectionWindows.Visible == false then
                 for count, allchildget in pairs(MainGui:GetChildren()) do
-                    if allchildget.ClassName == "Frame" and allchildget:FindFirstChildWhichIsA("BoolValue") then
+                    if allchildget.ClassName == "ScrollingFrame" and allchildget:FindFirstChildWhichIsA("BoolValue") then
                         allchildget.Visible = false
                     end
                 end
@@ -167,9 +170,10 @@ function LibraryUI.CreateLib(Title, theme)
         UIGridLayout.CellSize = UDim2.new(0, 500, 0, 50)
 
         function TabCall:NewToggle(ToggleTitle, Description, callback)
+            local ToggleCall = {}
             local callback = callback or function() end
             
-            local Toggle = Instance.new("Frame")
+            local Toggle = Instance.new("TextButton")
             local UICorner = Instance.new("UICorner")
             local TextLabel = Instance.new("TextLabel")
             local Toggle_2 = Instance.new("TextButton")
@@ -178,12 +182,35 @@ function LibraryUI.CreateLib(Title, theme)
             local UICorner_3 = Instance.new("UICorner")
             local ToggleState = false
 
-            Toggle.Name = "Toggle"
+            local Dropdown = Instance.new("Frame")
+            local DropDowncorner = Instance.new("UICorner")
+
+            Toggle.Name = randomString()
             Toggle.Parent = SectionWindows
             Toggle.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             Toggle.BorderSizePixel = 0
             Toggle.LayoutOrder = 1
             Toggle.Size = UDim2.new(0, 100, 0, 100)
+            Toggle.AutoButtonColor = false
+
+            Toggle.MouseButton2Click:Connect(function()
+                if Dropdown.Visible == false then
+                    Dropdown.Visible = true
+                else
+                    Dropdown.Visible = false
+                end
+            end)
+
+            Dropdown.Name = randomString()
+            Dropdown.Visible = false
+            Dropdown.Parent = Toggle
+            Dropdown.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+            Dropdown.BorderSizePixel = 0
+            Dropdown.Position = UDim2.new(0, 0, 0.8, 0)
+            Dropdown.Size = UDim2.new(1, 0, 0, 10)
+
+            DropDowncorner.Parent = Dropdown
+            DropDowncorner.CornerRadius = UDim.new(0, 8)
 
             UICorner.Parent = Toggle
 
@@ -223,19 +250,92 @@ function LibraryUI.CreateLib(Title, theme)
 
             Toggle_2.MouseButton1Click:Connect(function()
                 if ToggleState == false then
-                    ToggleState = true
-                    Frame:TweenPosition(UDim2.new(0, 0, 0.5, 0), "In", Enum.EasingStyle.Linear, 0.1, false)
-                    Toggle_2.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
-                    TextLabel.TextColor3 = Color3.fromRGB(255,255,255)
-                    pcall(callback, false)
-                else
-                    ToggleState = false
                     Frame:TweenPosition(UDim2.new(0.8, 0, 0.5, 0), "In", Enum.EasingStyle.Linear, 0.1, false)
+                    ToggleState = true
+                    pcall(callback, true)
                     TextLabel.TextColor3 = Color3.fromRGB(9, 156, 209)
                     Toggle_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    pcall(callback, true)
+                else
+                    Frame:TweenPosition(UDim2.new(0, 0, 0.5, 0), "In", Enum.EasingStyle.Linear, 0.1, false)
+                    ToggleState = false
+                    pcall(callback, false)
+                    Toggle_2.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+                    TextLabel.TextColor3 = Color3.fromRGB(255,255,255)
                 end
             end)
+
+            function ToggleCall:NewDropDown(DropdownTitle, minvalue, maxvalue, currentvalue, callbackdropdown)
+                local callbackdropdown = callbackdropdown or function() end
+                local minvalue = tonumber(minvalue) or 0
+                local maxvalue = tonumber(maxvalue) or 100
+                local currentvalue = tonumber(currentvalue) or 0
+
+                local Slider = Instance.new("Frame")
+                local SliderTrigger = Instance.new("TextButton")
+                local SliderFrame = Instance.new("Frame")
+                local UICorner = Instance.new("UICorner")
+                local TextButton = Instance.new("TextLabel")
+
+                Slider.Name = "Slider"
+                Slider.Parent = Dropdown
+                Slider.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                Slider.BorderSizePixel = 0
+                Slider.Size = UDim2.new(1, 0, 0, 40)
+
+                SliderTrigger.Name = "SliderTrigger"
+                SliderTrigger.Parent = Slider
+                SliderTrigger.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+                SliderTrigger.BackgroundTransparency = 1.000
+                SliderTrigger.BorderSizePixel = 0
+                SliderTrigger.Position = UDim2.new(0.200000003, 0, 0, 0)
+                SliderTrigger.Size = UDim2.new(0.800000012, 0, 1, 0)
+                SliderTrigger.Font = Enum.Font.SourceSans
+                SliderTrigger.Text = ""
+                SliderTrigger.TextColor3 = Color3.fromRGB(0, 0, 0)
+                SliderTrigger.TextSize = 1.000
+
+                SliderFrame.Name = "SliderFrame"
+                SliderFrame.Parent = Slider
+                SliderFrame.AnchorPoint = Vector2.new(0, 0.5)
+                SliderFrame.BackgroundColor3 = Color3.fromRGB(9, 156, 209)
+                SliderFrame.BorderSizePixel = 0
+                SliderFrame.Position = UDim2.new(0, 100, 0.5, 0)
+                SliderFrame.Size = UDim2.new(0, 0, 0, 10)
+
+                UICorner.Parent = SliderFrame
+
+                TextButton.Parent = Slider
+                TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                TextButton.BackgroundTransparency = 1.000
+                TextButton.BorderSizePixel = 0
+                TextButton.Size = UDim2.new(0, 100, 1, 0)
+                TextButton.Font = Enum.Font.Ubuntu
+                TextButton.Text = DropdownTitle .. ": 0" or "Slider: 0"
+                TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+                TextButton.TextSize = 14.000
+                SliderTrigger.MouseButton1Down:Connect(function()
+                    currentvalue = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 318) * SliderFrame.AbsoluteSize.X) + tonumber(minvalue)) or 0
+                    pcall(callbackdropdown, currentvalue)
+                    SliderFrame.Size = UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 318), 0, 16)
+                    local moveconnection = mouse.Move:Connect(function()
+                        TextButton.Text = DropdownTitle .. ": " .. tostring(currentvalue) or "Slider: " .. tostring(currentvalue)
+                        currentvalue = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 318) * SliderFrame.AbsoluteSize.X) + tonumber(minvalue))
+                        pcall(callbackdropdown, currentvalue)
+                        SliderFrame:TweenSize(UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 318), 0, 16), "In", Enum.EasingStyle.Linear, 0.15, false)
+                    end)
+                    local releaseconnection
+                    releaseconnection = uis.InputEnded:Connect(function(Mouse)
+                        if Mouse.UserInputType == Enum.UserInputType.MouseButton1 then
+                            currentvalue = math.floor((((tonumber(maxvalue) - tonumber(minvalue)) / 318) * SliderFrame.AbsoluteSize.X) + tonumber(minvalue))
+                            pcall(callbackdropdown, currentvalue)
+                            SliderFrame:TweenSize(UDim2.new(0, math.clamp(mouse.X - SliderFrame.AbsolutePosition.X, 0, 318), 0, 16), "In", Enum.EasingStyle.Linear, 0.15, false)
+                            moveconnection:Disconnect()
+                            releaseconnection:Disconnect()
+                        end
+                    end)
+                end)
+            end
+            return ToggleCall
         end
         return TabCall
     end
@@ -244,7 +344,10 @@ function LibraryUI.CreateLib(Title, theme)
         if state == true then
             if MainGui then
                 pcall(function()
-                    getRoot(char).Anchored = true
+                    local plr = game:GetService("Players").LocalPlayer
+                    MainGui.Size = UDim2.new(0, 0, 0, 0)
+                    MainGui:TweenSize(UDim2.new(0, 750, 0, 530), "In", Enum.EasingStyle.Linear, 0.15, false)
+                    getRoot(plr.Character).Anchored = true
                     MainGui.Visible = true
                     oldcameratype = Camera.CameraType
                     Blurgui.Enabled = true
@@ -254,7 +357,8 @@ function LibraryUI.CreateLib(Title, theme)
         elseif state == false then
             if MainGui then
                 pcall(function()
-                    getRoot(char).Anchored = false
+                    local plr = game:GetService("Players").LocalPlayer
+                    getRoot(plr.Character).Anchored = false
                     MainGui.Visible = false
                     Blurgui.Enabled = false
                     if oldcameratype then
