@@ -112,7 +112,6 @@ end)
 
 speed:NewDropDown("Speed", 0, 100, 0, function(callback)
     if callback then
-        print(callback)
         callbackspeed = tonumber(callback)
     end
 end)
