@@ -10,11 +10,6 @@ Blurgui.Enabled = false
 local AllTab = {}
 local uis = game:GetService("UserInputService")
 local mouse = game:GetService("Players").LocalPlayer:GetMouse()
-local dir = "Matrix/"
-local betterisfile = function(file)
-	local suc, res = pcall(function() return readfile(file) end)
-	return suc and res ~= nil
-end
 
 function randomString(lengthget)
 	if lengthget and tonumber(lengthget) then
@@ -41,29 +36,6 @@ function getRoot(charget)
 	return rootPart
 end
 
-if isfolder("Matrix") == false then
-    makefolder("Matrix")
-end
-
-if isfolder("Matrix/Assets") == false then
-    makefolder("Matrix/Assets")
-end
-
-if isfolder(dir:gsub("/", "")) == false then
-	makefolder(dir:gsub("/", ""))
-end
-
-local function getcustomassetfunc(path)
-	if not betterisfile(path) then
-		local req = httprequest({
-			Url = "https://raw.githubusercontent.com/codernocook/MatrixClient-Roblox-"..path:gsub("Matrix/Assets", "Assets"),
-			Method = "GET"
-		})
-		writefile(path, req.Body)
-	end
-	return getasset(path) 
-end
-
 
 function LibraryUI.CreateLib(Title, theme)
     local LibraryCall = {}
@@ -73,31 +45,9 @@ function LibraryUI.CreateLib(Title, theme)
 
     TabGui.Parent = CoreGui or game:GetService("CoreGui")
     TabGui.ResetOnSpawn = false
-    TabGui.DisplayOrder = 999
     TabGui.Name = randomString()
     TabGui.OnTopOfCoreBlur = true
     TabGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-
-    if gethui and (not KRNL_LOADED) then
-		TabGui.Parent = gethui()
-	elseif not is_sirhurt_closure and syn and syn.protect_gui then
-		syn.protect_gui(TabGui)
-		TabGui.Parent = game:GetService("CoreGui")
-	else
-		TabGui.Parent = game:GetService("CoreGui")
-	end
-
-    local windowshadow = Instance.new("ImageLabel")
-	windowshadow.AnchorPoint = Vector2.new(0.5, 0.5)
-	windowshadow.Position = UDim2.new(0.5, 0, 0.5, 0)
-	windowshadow.Image = getcustomassetfunc("Matrix/Assets/WindowBlur.png")
-	windowshadow.BackgroundTransparency = 1
-	windowshadow.ZIndex = -1
-	windowshadow.Size = UDim2.new(1, 6, 1, 6)
-	windowshadow.ImageColor3 = Color3.new(0, 0, 0)
-	windowshadow.ScaleType = Enum.ScaleType.Slice
-	windowshadow.SliceCenter = Rect.new(10, 10, 118, 118)
-	windowshadow.Parent = TabGui
 
     MainGui.Name = randomString()
     MainGui.Visible = false
