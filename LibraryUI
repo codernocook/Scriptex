@@ -69,7 +69,7 @@ function LibraryUI.CreateLib(Title, theme)
 
     local Tab = Instance.new("Frame")
     local TabCorner = Instance.new("UICorner")
-    local TabUIlist = Instance.new("UIGridLayout")
+    local TabUIlist = Instance.new("UIListLayout")
 
     Tab.Name = randomString()
     Tab.Parent = MainGui
@@ -85,8 +85,7 @@ function LibraryUI.CreateLib(Title, theme)
 
     TabUIlist.HorizontalAlignment = Enum.HorizontalAlignment.Center
     TabUIlist.SortOrder = Enum.SortOrder.LayoutOrder
-    TabUIlist.CellPadding = UDim2.new(0, 5, 0, 0)
-    TabUIlist.CellSize = UDim2.new(1, 0, 0, 40)
+    TabUIlist.Padding = UDim.new(0, 0)
 
     local Logo = Instance.new("TextLabel")
 
@@ -129,8 +128,10 @@ function LibraryUI.CreateLib(Title, theme)
         SectionWindows.Size = UDim2.new(0, 570, 1, 0)
         if TabCount <= 1 then
             SectionWindows.Visible = true
+            SelectTab.BackgroundColor3 = Color3.fromRGB(20, 145, 255)
         else
             SectionWindows.Visible = false
+            SelectTab.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
         end
 
         local ValueDetection = Instance.new("BoolValue")
