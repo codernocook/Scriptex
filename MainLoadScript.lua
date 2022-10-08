@@ -123,6 +123,50 @@ PlayerTab:NewToggle("Backtrack", "There nothing", function(state)
         settings():GetService("NetworkSettings").IncomingReplicationLag = 0
     end
 end)
+
+local BetterGodModeConnection = nil
+local BetterGodModeRespawnCheck = false
+
+PlayerTab:NewToggle("GodMode", "There nothing", function(state)
+    if state then
+        if game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") then
+            BetterGodModeRespawnCheck = false
+            BetterGodModeConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if game:GetService("Players").LocalPlayer and game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid") then
+                    game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").BreakJointsOnDeath = false
+                    game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+                    if game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").Health <= 0 then
+                        game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid").BreakJointsOnDeath = false
+                        game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):SetStateEnabled(Enum.HumanoidStateType.Dead, false)
+                        if BetterGodModeRespawnCheck == false then
+                            BetterGodModeRespawnCheck = true
+                            local oldrespawnpos = game:GetService("Players").LocalPlayer.Character:GetPivot()
+                            local oldcameracframe = game:GetService("Workspace").CurrentCamera.CFrame
+                            task.wait(game:GetService("Players").RespawnTime - 0.1)
+                            oldrespawnpos = game:GetService("Players").LocalPlayer.Character:GetPivot()
+                            oldcameracframe = game:GetService("Workspace").CurrentCamera.CFrame
+                            task.wait(0.1)
+                            game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+                            task.wait(0.1)
+                            repeat task.wait() until game:GetService("Players").LocalPlayer.Character and game:GetService("Workspace").CurrentCamera
+                            game:GetService("Players").LocalPlayer.Character:PivotTo(oldrespawnpos)
+                            game:GetService("Workspace").CurrentCamera.CFrame = oldcameracframe
+                            game:GetService("Players").LocalPlayer.Character:PivotTo(oldrespawnpos)
+                            game:GetService("Workspace").CurrentCamera.CFrame = oldcameracframe
+                            game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Humanoid"):SetStateEnabled(Enum.HumanoidStateType.Jumping, true)
+                            BetterGodModeRespawnCheck = false
+                        end
+                    end
+                end
+            end)
+        end
+    else
+        if BetterGodModeConnection then
+            BetterGodModeConnection:Disconnect()
+            BetterGodModeRespawnCheck = true
+        end
+    end
+end)
 --
 
 local EspConnection = nil
