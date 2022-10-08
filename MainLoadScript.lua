@@ -1,3 +1,9 @@
+if shared.Matrix then
+    return
+    error("Matrix is executed!")
+else
+    shared.Matrix = true
+end
 local LibraryUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/codernocook/MatrixClient-Roblox-/main/LibraryUI"))()
 local uis = game:GetService("UserInputService")
 
