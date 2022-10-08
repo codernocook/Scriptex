@@ -15,11 +15,20 @@ local RenderTab = library:NewTab("Render")
 local plr = game:GetService("Players").LocalPlayer
 local char = plr.Character or plr.CharacterAdded
 local Camera = game:GetService("Workspace").CurrentCamera
+local queueteleport = (syn and syn.queue_on_teleport) or queue_on_teleport or (fluxus and fluxus.queue_on_teleport)
 
 function getRoot(charget)
 	local rootPart = charget:FindFirstChild('HumanoidRootPart') or charget:FindFirstChild('Torso') or charget:FindFirstChild('UpperTorso')
 	return rootPart
 end
+
+game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
+	if State == Enum.TeleportState.Started then
+		if queueteleport then
+			queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/codernocook/prisonlife/main/Main.lua'))()")
+		end
+	end
+end)
 
 local flyloop = nil
 local userinputget1 = nil
