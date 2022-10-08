@@ -14,6 +14,12 @@ local PlayerTab = library:NewTab("Player")
 local RenderTab = library:NewTab("Render")
 local plr = game:GetService("Players").LocalPlayer
 local char = plr.Character or plr.CharacterAdded
+local Camera = game:GetService("Workspace").CurrentCamera
+
+function getRoot(charget)
+	local rootPart = charget:FindFirstChild('HumanoidRootPart') or charget:FindFirstChild('Torso') or charget:FindFirstChild('UpperTorso')
+	return rootPart
+end
 
 local flyloop = nil
 local userinputget1 = nil
@@ -118,8 +124,10 @@ end)
 --
 PlayerTab:NewToggle("Backtrack", "There nothing", function(state)
     if state then
-        settings():GetService("NetworkSettings").IncomingReplicationLag = 10
+        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(1)
+        settings():GetService("NetworkSettings").IncomingReplicationLag = 99999999
     else
+        game:GetService("NetworkClient"):SetOutgoingKBPSLimit(math.huge)
         settings():GetService("NetworkSettings").IncomingReplicationLag = 0
     end
 end)
