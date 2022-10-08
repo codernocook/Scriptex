@@ -197,6 +197,9 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
                         Highlight.FillColor = EspPart.Color
                         Highlight.FillTransparency = 0.5
                         Highlight.Parent = EspPart
+                        if EspConnection == nil then
+                            EspPart:Destroy()
+                        end
                     else
                         local EspPart = allplrs.Character:FindFirstChild("EspPart")
                         local Highlight = EspPart:FindFirstChild("Highlight")
@@ -208,6 +211,9 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
                         end
                         EspPart.BrickColor = BrickColor.new(tostring(allplrs.TeamColor))
                         Highlight.FillColor = EspPart.Color
+                        if EspConnection == nil then
+                            EspPart:Destroy()
+                        end
                     end
                 end
             end
