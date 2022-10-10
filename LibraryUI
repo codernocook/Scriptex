@@ -101,25 +101,6 @@ function LibraryUI.CreateLib(Title, theme)
     Logo.TextColor3 = Color3.fromRGB(20, 145, 255)
     Logo.TextSize = 30.000
 
-    local NotificationList = Instance.new("Frame")
-        --local UINotifyLayout = Instance.new("UIListLayout")
-
-        NotificationList.Name = "NotificationList"
-        NotificationList.Parent = MainGui
-        NotificationList.AnchorPoint = Vector2.new(1, 0)
-        NotificationList.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-        NotificationList.BackgroundTransparency = 1.000
-        NotificationList.BorderSizePixel = 0
-        NotificationList.Position = UDim2.new(1, 0, 0.800000012, 0)
-        NotificationList.Size = UDim2.new(0, 250, 0, 55)
-
-    --[[
-        UINotifyLayout.Parent = NotificationList
-        UINotifyLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        UINotifyLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-        UINotifyLayout.Padding = UDim.new(0, 5)
-    --]]
-
     function LibraryCall:NewTab(TabName)
         local TabCall = {}
         TabCount += 1
@@ -402,71 +383,6 @@ function LibraryUI.CreateLib(Title, theme)
 
     function LibraryCall:GetWindowsToggle()
         return MainGui.Visible
-    end
-
-    function LibraryCall:Notify(notifylabel, notifyinfo)
-        local Notification = Instance.new("Frame")
-        local UICorner = Instance.new("UICorner")
-        local Decorate = Instance.new("Frame")
-        local UICorner_2 = Instance.new("UICorner")
-        local NotifyLabel = Instance.new("TextLabel")
-        local NotifyInfo = Instance.new("TextLabel")
-
-        Notification.Name = randomString
-        Notification.Parent = NotificationList
-        Notification.AnchorPoint = Vector2.new(1, 0)
-        Notification.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        Notification.BorderSizePixel = 0
-        Notification.Position = UDim2.new(12, 0, 0.800000012, 0)
-        Notification.Size = UDim2.new(0, 250, 0, 55)
-
-        UICorner.Parent = Notification
-
-        Decorate.Name = randomString()
-        Decorate.Parent = Notification
-        Decorate.BackgroundColor3 = Color3.fromRGB(7, 197, 255)
-        Decorate.BorderSizePixel = 0
-        Decorate.Size = UDim2.new(0, 10, 1, 0)
-
-        UICorner_2.Parent = Decorate
-
-        NotifyLabel.Name = randomString()
-        NotifyLabel.Parent = Notification
-        NotifyLabel.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        NotifyLabel.BackgroundTransparency = 1.000
-        NotifyLabel.BorderSizePixel = 0
-        NotifyLabel.LayoutOrder = 1
-        NotifyLabel.Size = UDim2.new(0, 120, 0, 20)
-        NotifyLabel.Font = Enum.Font.Ubuntu
-        NotifyLabel.Text = notifylabel or "Notification"
-        NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        NotifyLabel.TextSize = 15.000
-
-        NotifyInfo.Name = "NotifyInfo"
-        NotifyInfo.Parent = Notification
-        NotifyInfo.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        NotifyInfo.BackgroundTransparency = 1.000
-        NotifyInfo.BorderSizePixel = 0
-        NotifyInfo.LayoutOrder = 2
-        NotifyInfo.Position = UDim2.new(0, 25, 0, 20)
-        NotifyInfo.Size = UDim2.new(0, 235, 0, 35)
-        NotifyInfo.Font = Enum.Font.Ubuntu
-        NotifyInfo.Text = notifyinfo
-        NotifyInfo.TextColor3 = Color3.fromRGB(255, 255, 255)
-        NotifyInfo.TextSize = 15.000
-        NotifyInfo.TextXAlignment = Enum.TextXAlignment.Left
-        NotifyInfo.TextYAlignment = Enum.TextYAlignment.Top
-
-        Notification:TweenPosition(UDim2.new(1, 0, 0.8, 0), "In", Enum.EasingStyle.Linear, 0.1, true)
-
-        local rainbownotifyconnection = nil
-
-        local function zigzag(X) return math.acos(math.cos(X*math.pi))/math.pi end
-        local rainbowcounternotify = 0
-        rainbownotifyconnection = game:GetService("RunService").Heartbeat:Connect(function()
-            Logo.TextColor3 = Color3.fromHSV(zigzag(rainbowcounternotify),1,1)
-            rainbowcounternotify = rainbowcounternotify + 0.01
-        end)
     end
 
     local function zigzag(X) return math.acos(math.cos(X*math.pi))/math.pi end
