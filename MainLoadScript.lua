@@ -281,7 +281,7 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
                             EspPart.CFrame = allplrs.Character:GetPivot()
                         end
                         EspPart.BrickColor = BrickColor.new(tostring(allplrs.TeamColor))
-                        Highlight.FillColor = EspPart.Color
+                        Highlight.Color = EspPart.Color
                         if not EspConnection then
                             EspPart:Destroy()
                         end
