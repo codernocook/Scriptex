@@ -1,6 +1,5 @@
 if shared.Matrix then
-    return
-    error("Matrix is executed!")
+    return error("Matrix is executed!")
 else
     shared.Matrix = true
 end
@@ -33,6 +32,8 @@ end)
 local flyloop = nil
 local userinputget1 = nil
 local userinputget2 = nil
+
+library:notify("Matrix executed successfully")
 
 MovementTab:NewToggle("Fly", "There nothing", function(state)
     if state then
@@ -120,6 +121,7 @@ local speed = MovementTab:NewToggle("Speed", "There nothing", function(state)
     else
         if char and char:FindFirstChildWhichIsA("Humanoid") then
             char:FindFirstChildWhichIsA("Humanoid").WalkSpeed = 16
+            char:TranslateBy(char:FindFirstChildWhichIsA("Humanoid").MoveDirection);
             if speedconnection then
                 speedconnection:Disconnect()
             end
@@ -187,8 +189,16 @@ PlayerTab:NewToggle("GodMode", "There nothing", function(state)
     end
 end)
 --
-
 local EspConnection = nil
+
+function round(num, numDecimalPlaces)
+	local mult = 10^(numDecimalPlaces or 0)
+	return math.floor(num * mult + 0.5) / mult
+end
+
+local ESPholder = Instance.new("Folder")
+ESPholder.Name = '_ESP'
+ESPholder.Parent = game:GetService("CoreGui")
 
 RenderTab:NewToggle("Esp", "There nothing", function(state)
     if state then
@@ -197,7 +207,7 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
                 if allplrs.Character and allplrs ~= game:GetService("Players").LocalPlayer then
                     if not allplrs.Character:FindFirstChild("EspPart") then
                         local EspPart = Instance.new("Part")
-                        local Highlight = Instance.new("Highlight")
+                        local Highlight = Instance.new("BoxHandleAdornment");
         
                         EspPart.Name = "EspPart"
                         EspPart.Transparency = 0
@@ -212,10 +222,52 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
                         EspPart.Anchored = true
                         EspPart.CanCollide = false
         
-                        Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                        Highlight.FillColor = EspPart.Color
-                        Highlight.FillTransparency = 0.5
+                        Highlight.Adornee = EspPart
+                        Highlight.Size = EspPart.Size
+                        Highlight.Color3 = EspPart.Color
+                        Highlight.Transparency = 0.5
                         Highlight.Parent = EspPart
+                        Highlight.AlwaysOnTop = true
+                        Highlight.ZIndex = 10
+
+                        --// skidded from inf yield
+                        
+                        --[[
+                            if allplrs.Character and allplrs.Character:FindFirstChild('Head') then
+                            local BillboardGui = Instance.new("BillboardGui")
+                            local TextLabel = Instance.new("TextLabel")
+                            BillboardGui.Adornee = allplrs.Character.Head
+                            BillboardGui.Name = allplrs.Name
+                            BillboardGui.Parent = ESPholder
+                            BillboardGui.Size = UDim2.new(0, 100, 0, 150)
+                            BillboardGui.StudsOffset = Vector3.new(0, 1, 0)
+                            BillboardGui.AlwaysOnTop = true
+                            TextLabel.Parent = BillboardGui
+                            TextLabel.BackgroundTransparency = 1
+                            TextLabel.Position = UDim2.new(0, 0, 0, -50)
+                            TextLabel.Size = UDim2.new(0, 100, 0, 100)
+                            TextLabel.Font = Enum.Font.SourceSansSemibold
+                            TextLabel.TextSize = 20
+                            TextLabel.TextColor3 = Color3.new(1, 1, 1)
+                            TextLabel.TextStrokeTransparency = 0
+                            TextLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+                            local pos = math.floor((getRoot(game:GetService("Players").LocalPlayer.Character).Position - getRoot(allplrs.Character).Position).magnitude)
+                            TextLabel.Text = 'Name: '..allplrs.Name..' | Health: '..round(allplrs.Character:FindFirstChildOfClass('Humanoid').Health, 1)..' | Studs: '..pos
+                            TextLabel.ZIndex = 10
+
+                            local runconnect = game:GetService("RunService").Heartbeat:Connect(function()
+                                if EspConnection == nil then runconnect:Disconnect(); runconnect = nil; return; end;
+                                pos = math.floor((getRoot(game:GetService("Players").LocalPlayer.Character).Position - getRoot(allplrs.Character).Position).magnitude)
+                                TextLabel.Text = 'Name: '..allplrs.Name..' | Health: '..round(allplrs.Character:FindFirstChildOfClass('Humanoid').Health, 1)..' | Studs: '..pos
+                            end)
+
+                            allplrs.Character:FindFirstChildOfClass('Humanoid').HealthChanged:Connect(function()
+                                if EspConnection == nil then runconnect:Disconnect(); runconnect = nil; return; end;
+                                pos = math.floor((getRoot(game:GetService("Players").LocalPlayer.Character).Position - getRoot(allplrs.Character).Position).magnitude)
+                                TextLabel.Text = 'Name: '..allplrs.Name..' | Health: '..round(allplrs.Character:FindFirstChildOfClass('Humanoid').Health, 1)..' | Studs: '..pos
+                            end)
+                        end
+                        --]]
                         if EspConnection == nil then
                             EspPart:Destroy()
                         end
@@ -244,7 +296,8 @@ RenderTab:NewToggle("Esp", "There nothing", function(state)
     end
 end)
 
-RenderTab:NewToggle("LineEsp", "There nothing", function(state)
+--[[
+    RenderTab:NewToggle("LineEsp", "There nothing", function(state)
     if state then
         for allplrcount, allplrget in pairs(game:GetService("Players"):GetPlayers()) do
             if allplrget.Character and getRoot(allplrget.Character) and allplrget ~= plr then
@@ -299,6 +352,7 @@ RenderTab:NewToggle("LineEsp", "There nothing", function(state)
         settings():GetService("NetworkSettings").IncomingReplicationLag = 0
     end
 end)
+--]]
 
 uis.InputBegan:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.RightShift then
